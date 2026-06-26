@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Produtos — VSTECH Informática</title>
+    <meta name="description" content="Catálogo de peças e produtos da VSTECH Informática. Assistência técnica e peças para notebooks e computadores.">
+    <link rel="icon" type="image/png" href="imagens/logo-vstech-favicon.png">
+    <link rel="apple-touch-icon" href="imagens/logo-vstech-favicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ── HEADER ── -->
+    <header class="header">
+        <div class="container">
+            <button
+                class="logo"
+                type="button"
+                aria-label="Abrir menu da VSTECH"
+                aria-controls="siteSidebar"
+                aria-expanded="false"
+            >
+                <span class="logo-text">
+                    <img class="logo-wordmark" src="imagens/logo-vstech-site.png" alt="VSTECH Informática">
+                </span>
+            </button>
+
+            <nav class="nav" aria-label="Navegação principal">
+                <a href="index.html" class="nav-link active" aria-current="page">Catálogo</a>
+                <a href="admin.html" class="nav-link">Administração</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ── SIDEBAR ── -->
+    <aside id="siteSidebar" class="site-sidebar" aria-hidden="true">
+        <div class="site-sidebar-panel" role="dialog" aria-modal="true" aria-labelledby="siteSidebarTitle">
+            <button class="sidebar-close" type="button" aria-label="Fechar menu">&times;</button>
+
+            <img class="sidebar-logo" src="imagens/logo-vstech-site.png" alt="VSTECH Informática">
+            <p class="sidebar-kicker">Assistência técnica e peças</p>
+            <h2 id="siteSidebarTitle">Como podemos ajudar?</h2>
+            <p class="sidebar-text">Confira nosso catálogo ou fale com a loja para encontrar a peça certa.</p>
+
+            <nav class="sidebar-links" aria-label="Links rápidos">
+                <a href="index.html">Início</a>
+                <a href="index.html#productsGrid">Catálogo de produtos</a>
+                <a href="admin.html">Administração</a>
+            </nav>
+
+            <div class="sidebar-contact-card">
+                <strong>Não encontrou o que precisava?</strong>
+                <p>Entre em contato e envie o modelo ou código da peça.</p>
+                <a
+                    class="sidebar-contact-primary"
+                    href="https://wa.me/556993419933?text=Ol%C3%A1%2C%20n%C3%A3o%20encontrei%20o%20que%20precisava%20no%20cat%C3%A1logo."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Chamar no WhatsApp
+                </a>
+                <a href="tel:+5569992903194">Ligar: (69) 99290-3194</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ── FILTROS ── -->
+    <section class="filters-section" aria-label="Filtros do catálogo">
+        <div class="container">
+
+            <div class="filters-wrapper">
+                <div class="search-box">
+                    <label class="sr-only" for="searchInput">Pesquisar produto</label>
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Pesquisar por nome, marca ou código…"
+                        class="search-input"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+                </div>
+
+                <div class="filter-box">
+                    <label for="categoryFilter">Categoria</label>
+                    <select id="categoryFilter" class="category-select">
+                        <option value="">TODAS AS CATEGORIAS</option>
+                    </select>
+                </div>
+
+                <button id="clearFilters" class="btn-clear" type="button">
+                    Limpar filtros
+                </button>
+            </div>
+
+            <div id="catalogSummary" class="catalog-summary" aria-live="polite" aria-atomic="true"></div>
+
+            <div class="catalog-notifications" role="list" aria-label="Informações da loja">
+                <div class="notification-card notification-card--success" role="listitem">
+                    <strong>ASSISTENCIA TECNICA VSTECH</strong>
+                    <p>Atendimento rápido pelo WhatsApp e confirmação de estoque em tempo real.</p>
+                </div>
+            
+            </div>
+
+            <div class="sidebar-contact-card">
+                <strong>Não encontrou o que precisava?</strong>
+                <p>Podemos fazer uma busca mais profunda. Envie uma mensagem ou ligue para a loja.</p>
+                <button id="openContactModal" type="button" class="sidebar-contact-primary">
+                    Solicitar busca manual
+                </button>
+            </div>
+
+            <div id="catalogCarcacaNote" class="catalog-note" style="display: none;" role="note">
+                <strong>Observação sobre carcaças</strong>
+                <p><strong>IMPORTANTE:</strong> Algumas carcaças e peças de notebook disponíveis em nosso estoque não estão exibidas no catálogo por não estarem completas.</p>
+                <p>Em muitos casos, possuímos apenas componentes específicos, como <strong>tampa da tela</strong>, <strong>moldura</strong>, <strong>palmrest (base superior)</strong>, <strong>base inferior</strong>, <strong>dobradiças</strong> ou outras partes avulsas.</p>
+                <p>Caso esteja procurando uma peça específica, entre em contato informando o modelo do notebook. Nossa equipe verificará a disponibilidade em estoque e ajudará a encontrar o componente necessário.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CONTEÚDO PRINCIPAL ── -->
+    <main class="main-content" id="mainContent">
+        <div class="container">
+
+                <div id="loadingMessage" class="loading-message" role="status" aria-live="polite">
+                <span class="loading-spinner" aria-hidden="true"></span>
+                CARREGANDO PRODUTOS…
+            </div>
+
+            <div id="errorMessage" class="error-message" style="display: none;" role="alert"></div>
+
+            <div
+                id="productsGrid"
+                class="products-grid"
+                role="list"
+                aria-label="Produtos disponíveis"
+            ></div>
+
+            <div id="noResults" class="no-results" style="display: none;" role="status" aria-live="polite">
+                <p>Nenhum produto encontrado</p>
+                <p>Tente ajustar seus filtros de busca</p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ── FOOTER ── -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 VSTECH Informática — Todos os direitos reservados</p>
+            <p>
+                <a href="tel:+5569992903194" style="color: inherit; text-decoration: none;">
+                    (69) 99290-3194
+                </a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- ── MODAL PRODUTO ── -->
+    <div id="productModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="modalName">
+        <div class="modal-content">
+            <button class="modal-close" type="button" aria-label="Fechar detalhes do produto">&times;</button>
+
+            <div class="modal-body">
+                <div class="modal-carousel" aria-label="Fotos do produto">
+                    <button
+                        id="carouselPrev"
+                        class="carousel-btn carousel-prev"
+                        type="button"
+                        onclick="trocarImagemModal(-1)"
+                        aria-label="Foto anterior"
+                    >&#8249;</button>
+
+                    <img id="modalImage" src="" alt="" class="modal-image">
+                    <div id="imageZoomLens" class="image-zoom-lens" aria-hidden="true"></div>
+                    <div id="carouselEmpty" class="carousel-empty" aria-hidden="true">SEM IMAGEM</div>
+
+                    <button
+                        id="carouselNext"
+                        class="carousel-btn carousel-next"
+                        type="button"
+                        onclick="trocarImagemModal(1)"
+                        aria-label="Próxima foto"
+                    >&#8250;</button>
+
+                    <span id="carouselCounter" class="carousel-counter" aria-live="polite"></span>
+                </div>
+
+                <div class="modal-details">
+                    <h2 id="modalName"></h2>
+
+                    <p class="modal-info">
+                        <strong>Código</strong>
+                        <span id="modalCode"></span>
+                    </p>
+                    <p class="modal-info">
+                        <strong>Marca</strong>
+                        <span id="modalBrand"></span>
+                    </p>
+                    <p class="modal-info">
+                        <strong>Categoria</strong>
+                        <span id="modalCategory"></span>
+                    </p>
+                    <p class="modal-description">
+                        <strong>Descrição</strong>
+                        <span id="modalDescription"></span>
+                    </p>
+
+                    <p class="modal-price" id="modalPrice" aria-label="Preço"></p>
+                    <p class="modal-stock" id="modalStock" aria-live="polite"></p>
+
+                    <button id="copyProductBtn" class="btn-copy-code" type="button">
+                        Compartilhar produto
+                    </button>
+                    <button id="modalInterestBtn" class="btn-interest" type="button">
+                        TENHO INTERESSE
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── MODAL CONTATO ── -->
+    <div id="contactModal" class="modal" style="display: none;" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
+        <div class="modal-content">
+            <button class="modal-close" type="button" aria-label="Fechar">&times;</button>
+
+            <div class="modal-body contact-modal-body">
+                <div class="contact-modal-panel">
+                    <h2 id="contactModalTitle">Não encontrou o que precisava?</h2>
+                    <p>Podemos buscar um produto manualmente para você. Envie uma mensagem no WhatsApp ou ligue para a loja.</p>
+
+                    <div class="contact-contact-list">
+                        <div>
+                            <strong>WhatsApp</strong>
+                            <p>
+                                <a id="contactWhatsAppLink" href="#" target="_blank" rel="noopener noreferrer">
+                                    Enviar mensagem
+                                </a>
+                            </p>
+                        </div>
+                        <div>
+                            <strong>Telefone</strong>
+                            <p>
+                                <a id="contactPhoneLink" href="tel:+5569992903194">
+                                    (69) 99290-3194
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <button id="contactCloseBtn" class="btn-interest" type="button">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SCRIPTS ── -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

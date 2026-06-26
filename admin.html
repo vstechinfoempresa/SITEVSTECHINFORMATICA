@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração - Catálogo de Produtos</title>
+    <link rel="icon" type="image/png" href="imagens/logo-vstech-favicon.png">
+    <link rel="apple-touch-icon" href="imagens/logo-vstech-favicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <button class="logo" type="button" aria-label="Abrir menu da VSTECH" aria-controls="siteSidebar" aria-expanded="false">
+                <span class="logo-text">
+                    <img class="logo-wordmark" src="imagens/logo-vstech-site.png" alt="VSTECH Informática">
+             
+                </span>
+            </button>
+            <nav class="nav" aria-label="Navegação principal">
+                <a href="index.html" class="nav-link">Catálogo</a>
+                <a href="admin.html" class="nav-link active">Administração</a>
+            </nav>
+        </div>
+    </header>
+
+    <aside id="siteSidebar" class="site-sidebar" aria-hidden="true">
+        <div class="site-sidebar-panel" role="dialog" aria-modal="true" aria-labelledby="siteSidebarTitle">
+            <button class="sidebar-close" type="button" aria-label="Fechar menu">&times;</button>
+            <img class="sidebar-logo" src="imagens/logo-vstech-site.png" alt="VSTECH Informática">
+            <p class="sidebar-kicker">Assistência técnica e peças</p>
+            <h2 id="siteSidebarTitle">Como podemos ajudar?</h2>
+            <p class="sidebar-text">Confira nosso catálogo ou fale com a loja para encontrar a peça certa.</p>
+
+            <nav class="sidebar-links" aria-label="Links rápidos">
+                <a href="index.html">Início</a>
+                <a href="index.html#productsGrid">Catálogo de produtos</a>
+                <a href="admin.html">Administração</a>
+            </nav>
+
+            <div class="sidebar-contact-card">
+                <strong>Não encontrou o que precisava?</strong>
+                <p>Entre em contato conosco e envie o modelo ou código da peça.</p>
+                <a class="sidebar-contact-primary" href="https://wa.me/556993419933?text=Ol%C3%A1%2C%20n%C3%A3o%20encontrei%20o%20que%20precisava%20no%20cat%C3%A1logo." target="_blank" rel="noopener">Chamar no WhatsApp</a>
+                <a href="tel:+5569992903194">Ligar: (69) 99290-3194</a>
+            </div>
+        </div>
+    </aside>
+
+    <main class="admin-container">
+        <h1 class="admin-title">Administração</h1>
+        <p class="admin-subtitle">Gerencie as imagens dos produtos do catálogo.</p>
+
+        <div class="admin-notice">
+            <strong>Como usar</strong>
+            <p>Coloque as imagens na pasta imagens, atualize a lista automática e escolha uma ou mais fotos para cada produto.</p>
+            <button type="button" onclick="salvarAssociacoesImagens()">Salvar associacoes no arquivo</button>
+            <button type="button" onclick="fazerLogoutAdmin()">Fazer logout</button>
+        </div>
+
+        <div class="auth-section" id="authSection">
+            <h2>Autenticação requerida</h2>
+            <p>Digite a senha para acessar a área de administração e gerenciar as imagens dos produtos.</p>
+            <div class="auth-form">
+                <input type="password" id="adminPassword" placeholder="Digite a senha">
+                <button type="button" onclick="autenticarAdmin()">Acessar</button>
+            </div>
+        </div>
+
+        <div id="adminTools" class="admin-filters" style="display: none;">
+            <div class="admin-filter-field">
+                <label for="adminSearchInput">Buscar produto</label>
+                <input type="text" id="adminSearchInput" placeholder="Código, nome, marca, categoria ou cód. fabricante">
+            </div>
+            <div class="admin-filter-field">
+                <label for="adminManufacturerCodeFilter">Número fabricante</label>
+                <input type="text" id="adminManufacturerCodeFilter" placeholder="Ex: PN, MPN ou referência">
+            </div>
+            <div class="admin-filter-field">
+                <label for="adminCategoryFilter">Categoria</label>
+                    <select id="adminCategoryFilter">
+                    <option value="">TODAS</option>
+                </select>
+            </div>
+            <div class="admin-filter-field">
+                <label for="adminSortFilter">Ordenar por</label>
+                <select id="adminSortFilter">
+                    <option value="default">PADRÃO</option>
+                    <option value="without-images">SEM FOTO PRIMEIRO</option>
+                    <option value="with-images">COM FOTO PRIMEIRO</option>
+                </select>
+            </div>
+            <div id="adminResultsCount" class="admin-results-count">0 PRODUTOS</div>
+        </div>
+
+        <div id="adminLoading" class="admin-loading" style="display: none;">
+            CARREGANDO PRODUTOS...
+        </div>
+
+        <div id="adminError" class="admin-error" style="display: none;"></div>
+
+        <div id="adminProductsGrid" class="admin-products-grid" style="display: none;"></div>
+    </main>
+
+    <div id="adminImageModal" class="admin-image-modal">
+        <div class="admin-image-modal-content">
+            <div class="admin-image-modal-header">
+                <h2 id="adminImageModalTitle">SELECIONAR FOTOS</h2>
+                <button type="button" class="btn-modal-close" onclick="fecharSeletorImagens()">Fechar</button>
+            </div>
+            <div id="adminImageGallery" class="admin-image-gallery"></div>
+            <div class="admin-image-modal-actions">
+                <span id="adminImageSelectionCount" class="image-summary">0 FOTOS SELECIONADAS</span>
+                <button type="button" class="btn-modal-save" onclick="salvarSelecaoImagens()">Salvar fotos</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 VSTECH - Administração</p>
+            <p>Versão 1.0</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="script.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
