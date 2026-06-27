@@ -262,6 +262,7 @@ const APP = {
 
 window.APP = APP;
 window.IMAGENS_PATH = IMAGENS_PATH;
+let lazyLoadObserver = null;
 
 function obterClasseMarca(marca) {
     const texto = normalizarTexto(marca);
@@ -810,14 +811,17 @@ function renderizarProdutos() {
     const produtosFiltrados = filtrarProdutos();
     grid.innerHTML = '';
 
+    const fragment = document.createDocumentFragment();
     produtosFiltrados.forEach(produto => {
-        grid.appendChild(criarCardProduto(produto));
+        fragment.appendChild(criarCardProduto(produto));
     });
+    grid.appendChild(fragment);
 
     if (noResults) {
         noResults.style.display = produtosFiltrados.length === 0 ? 'block' : 'none';
     }
 
+    lazyLoadImages();
     atualizarNotaCarcaca();
 }
 
@@ -907,6 +911,55 @@ function categoriaTemRotuloVisivel(categoria) {
     return normalizarTexto(categoria) !== 'sem categoria';
 }
 
+function lazyLoadImages() {
+    const imagens = document.querySelectorAll('img.product-image.product-image--lazy[data-src]');
+    if (imagens.length === 0) return;
+
+    if ('IntersectionObserver' in window) {
+        if (!lazyLoadObserver) {
+            lazyLoadObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const img = entry.target;
+                    carregarImagemLazy(img);
+                    observer.unobserve(img);
+                });
+            }, {
+                rootMargin: '250px 0px',
+                threshold: 0.01
+            });
+        }
+
+        imagens.forEach(img => {
+            if (img.dataset.src) {
+                lazyLoadObserver.observe(img);
+            }
+        });
+    } else {
+        imagens.forEach(carregarImagemLazy);
+    }
+}
+
+function carregarImagemLazy(img) {
+    if (!(img instanceof HTMLImageElement)) return;
+
+    const src = img.dataset.src;
+    if (!src) return;
+
+    img.src = src;
+    img.removeAttribute('data-src');
+    img.classList.add('product-image--loading');
+
+    img.onload = () => {
+        img.classList.remove('product-image--loading');
+        img.classList.add('product-image--loaded');
+    };
+
+    img.onerror = () => {
+        img.outerHTML = '<div class="product-placeholder" aria-hidden="true">SEM FOTO</div>';
+    };
+}
+
 function formatarTextoVisivel(valor) {
     const textoOriginal = String(valor || '').trim();
     const chave = textoOriginal.toLocaleUpperCase('pt-BR');
@@ -980,7 +1033,8 @@ function criarImagemProduto(produto) {
         return '<div class="product-placeholder" aria-hidden="true">SEM FOTO</div>';
     }
 
-    return `<img class="product-image" src="${IMAGENS_PATH}${encodeURI(primeiraImagem)}" alt="${escapeHtml(produto.nome)}" onerror="this.outerHTML='<div class=&quot;product-placeholder&quot; aria-hidden=&quot;true&quot;>SEM FOTO</div>'">`;
+    const src = `${IMAGENS_PATH}${encodeURI(primeiraImagem)}`;
+    return `<img class="product-image product-image--lazy" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1' height='1'%3E%3C/svg%3E" data-src="${src}" loading="lazy" decoding="async" alt="${escapeHtml(produto.nome)}" onerror="this.outerHTML='<div class=&quot;product-placeholder&quot; aria-hidden=&quot;true&quot;>SEM FOTO</div>'">`;
 }
 
 function criarContadorImagens(produto) {

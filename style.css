@@ -674,7 +674,16 @@ body.sidebar-open { overflow: hidden; }
     max-height: 100%;
     object-fit: contain;
     padding: 12px;
+    opacity: 0;
     transition: transform 280ms cubic-bezier(.2,.8,.2,1), opacity var(--transition);
+}
+
+.product-image--loading {
+    filter: blur(2px);
+}
+
+.product-image--loaded {
+    opacity: 1;
 }
 
 .product-card:hover .product-image { transform: scale(1.05); }
