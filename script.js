@@ -37,7 +37,6 @@ const NOTEBOOK_INCLUDE_TERMS = [
     'dobradicas',
     'flat',
     'flats',
-    'flet',
     'cabo flat',
     'cabo flex',
     'cabo flexivel',
@@ -179,7 +178,6 @@ const CATEGORY_FILTER_EXCLUDE_TERMS = [
 const NOTEBOOK_PART_HINT_TERMS = [
     'flat',
     'flats',
-    'flet',
     'flex',
     'cabo flex',
     'cabo flexivel',
